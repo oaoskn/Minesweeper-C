@@ -6,9 +6,13 @@
 //
 
 #include <stdio.h>
+#include "setup_ui.h"
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
-    return 0;
+int main(void) {
+    
+    GLFWwindow* window = NULL;
+  
+    create_window(window);
+    
+    return EXIT_SUCCESS;
 }
