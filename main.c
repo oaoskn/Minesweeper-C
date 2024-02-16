@@ -5,14 +5,13 @@
 //  Created by Kirill Gusev on 15.02.2024.
 //
 
-#include <stdio.h>
 #include "setup_ui.h"
 
-int main(void) {
+
+int main(int argc, char** argv) {
     
-    GLFWwindow* window = NULL;
-  
-    create_window(window);
+    glutInit(&argc, argv);
+    create_window();
     
     return EXIT_SUCCESS;
 }
