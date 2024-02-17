@@ -7,7 +7,11 @@
 
 #include "setup_ui.h"
 
-extern mine_cell map[map_width][map_height];
+extern const int map_width, map_height;
+extern mine_cell map[MAP_WIDTH][MAP_HEIGHT];
+extern int mines;
+
+game_difficult difficult;
 
 void show_mines_count(int a) {
     glLineWidth(3);
@@ -83,6 +87,10 @@ void draw_open_gamefield(void) {
     glEnd();
 }
 
+void touch_to_open_cell(int x, int y, float *ox, float *oy) {
+    
+}
+
 void show_game(void) {
     glLoadIdentity();
     glScalef(2.0 / map_width, 2.0 / map_height, 1); // scale of cell
@@ -156,11 +164,41 @@ void create_menu(void) {
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
+
 // MARK: - Функция создания окна
 
 void create_window(void) {
+    
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(800, 600);
+    
+    size_from_difficult game_size;
+    
+    switch (difficult) { // TODO: Need to create how to resize map size
+        case EASY:
+            game_size.width = 400;
+            game_size.height = 400;
+            // map_width = 10;
+            // map_height = 10;
+            mines = 10;
+            break;
+        case MEDIUM:
+            game_size.width = 600;
+            game_size.height = 600;
+            mines = 20;
+            break;
+        case HARD:
+            game_size.width = 800;
+            game_size.height = 800;
+            mines = 30;
+            break;
+        case HARDCORE:
+            game_size.width = 1000;
+            game_size.height = 1000;
+            mines = 100;
+            break;
+    }
+    
+    glutInitWindowSize(800, 600); //TODO: change to game_size in future
     glutInitWindowPosition(325, 150);
     glutCreateWindow("MINESWEEPER GAME");
    

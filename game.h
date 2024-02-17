@@ -14,8 +14,9 @@
 #include <math.h>
 #include <stdbool.h>
 
-#define map_height 10
-#define map_width 10
+#define MAP_HEIGHT 10
+#define MAP_WIDTH 10
+
 // MARK: - struct Mine Cell
 
 typedef struct {

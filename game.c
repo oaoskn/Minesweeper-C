@@ -7,6 +7,9 @@
 
 #include "game.h"
 
+const int map_height = MAP_HEIGHT;
+const int map_width = MAP_WIDTH;
+
 mine_cell map[map_height][map_width];
 int mines, closed_cells;
 
