@@ -13,6 +13,8 @@ extern int mines;
 
 game_difficult difficult;
 
+// MARK: - Func to show mines count
+
 void show_mines_count(int a) {
     glLineWidth(3);
     glColor3f(1, 1, 0);
@@ -51,7 +53,8 @@ void show_mines_count(int a) {
     glEnd();
 }
 
-// func to draw a mine, its a mock now
+// MARK: - Draw a mine
+
 void draw_mine(void) {
     glBegin(GL_TRIANGLE_FAN);
     glColor3f(0, 0, 0);
@@ -62,7 +65,25 @@ void draw_mine(void) {
     glEnd();
 }
 
-// Set a game field
+// MARK: - Draw a flag
+
+void draw_flag(void) {
+    glBegin(GL_TRIANGLES);
+    glColor3f(1, 0, 0);
+    glVertex2f(0.25, 0.75);
+    glVertex2f(0.85, 0.5);
+    glVertex2f(0.25, 0.25);
+    glEnd();
+    glLineWidth(5);
+    glBegin(GL_LINES);
+    glColor3f(0, 0, 0);
+    glVertex2f(0.25, 0.75);
+    glVertex2f(0.25, 0);
+    glEnd();
+}
+
+// MARK: - Draw a gamefield
+
 void draw_gamefield(void) {
     glBegin(GL_TRIANGLE_STRIP);
     glColor3f(0.8, 0.8, 0.8);
@@ -74,6 +95,8 @@ void draw_gamefield(void) {
     glVertex2f(1, 0);
     glEnd();
 }
+
+// MARK: - Open a single cell
 
 void draw_open_gamefield(void) {
     glBegin(GL_TRIANGLE_STRIP);
@@ -87,9 +110,33 @@ void draw_open_gamefield(void) {
     glEnd();
 }
 
-void touch_to_open_cell(int x, int y, float *ox, float *oy) {
-    
+// MARK: - Get mouse click to open a cell
+
+void touch_to_open_cell(int button, int state, int x, int y) {
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        // Convert mouse coordinates to cell coordinates (assuming each cell is 10x10 pixels)
+        int cell_x = x / (float)glutGet(GLUT_WINDOW_WIDTH) * MAP_WIDTH;
+        int cell_y = MAP_HEIGHT - y / (float)glutGet(GLUT_WINDOW_HEIGHT) * MAP_HEIGHT; // Invert y-coordinate because OpenGL origin is at bottom-left
+        
+        
+        if (cell_in_map(cell_x, cell_y)) {
+            map[cell_x][cell_y].open = true;
+            printf("cell (%d, %d) is open ", cell_x, cell_y);
+        }
+        // Print out the cell coordinates
+        printf("Clicked on cell (%d, %d)\n", cell_x, cell_y);
+        
+        glutPostRedisplay(); // request for refresh screen
+    }
 }
+
+// MARK: - Open a cell
+
+void opening_cells(void) {
+    glutMouseFunc(touch_to_open_cell);
+}
+
+// MARK: - Show a game
 
 void show_game(void) {
     glLoadIdentity();
@@ -100,7 +147,6 @@ void show_game(void) {
         for (int j = 0; j < map_width; j++) {
             glPushMatrix();
             glTranslated(i, j, 0);
-            
             if (map[i][j].open == true) {
                 draw_open_gamefield();
                 if (map[i][j].mine == true) {
@@ -111,25 +157,28 @@ void show_game(void) {
             } else {
                 draw_gamefield();
             }
-            
             glPopMatrix();
         }
     }
 }
 
-// MARK: - Scene
+// MARK: - Scene lifecycle
 
 void display(void) {
     glClearColor(0.07f, 0.13f, 0.17f, 0.0f); // set background colora
     glClear(GL_COLOR_BUFFER_BIT); //clear that color
     show_game();
     glFlush();
+    glutSwapBuffers();
 }
     
-// func to resize
+// MARK: - Resize window
+
 void reshape(int width, int height) {
 
 }
+
+// MARK: - Menu characterictics
 
 void menu(int value) {
     switch (value) {
@@ -165,47 +214,47 @@ void create_menu(void) {
 }
 
 
-// MARK: - Функция создания окна
+// MARK: - Create a OpenGL window
 
 void create_window(void) {
     
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     
     size_from_difficult game_size;
+    difficult = HARD;
     
     switch (difficult) { // TODO: Need to create how to resize map size
         case EASY:
             game_size.width = 400;
-            game_size.height = 400;
+            game_size.height = 300;
             // map_width = 10;
             // map_height = 10;
             mines = 10;
             break;
         case MEDIUM:
             game_size.width = 600;
-            game_size.height = 600;
+            game_size.height = 400;
             mines = 20;
             break;
         case HARD:
             game_size.width = 800;
-            game_size.height = 800;
+            game_size.height = 600;
             mines = 30;
             break;
         case HARDCORE:
             game_size.width = 1000;
-            game_size.height = 1000;
+            game_size.height = 800;
             mines = 100;
             break;
     }
-    
-    glutInitWindowSize(800, 600); //TODO: change to game_size in future
+   
+    glutInitWindowSize(game_size.width, game_size.height); //TODO: change to game_size in future
     glutInitWindowPosition(325, 150);
     glutCreateWindow("MINESWEEPER GAME");
    
     create_menu();
     new_game();
-    
+    opening_cells();
     glutDisplayFunc(display);
-    
     glutMainLoop();
 }
