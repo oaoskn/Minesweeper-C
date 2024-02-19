@@ -26,6 +26,28 @@ typedef struct {
     int count_near_mines;
 } mine_cell;
 
+// MARK: - Game difficult
+
+typedef enum {
+    EASY,
+    MEDIUM,
+    HARD,
+    HARDCORE // this is for a fucking menace
+} game_difficult;
+
+// MARK: - Game settings
+
+typedef struct {
+    game_difficult difficult;
+    union {
+        struct {
+            int width;
+            int height;
+            int mines;
+        } parameters;
+    };
+} game_settings;
+
 void new_game(void);
 bool cell_in_map(int x, int y);
 

@@ -8,19 +8,19 @@
 #include "game.h"
 
 const int map_height = MAP_HEIGHT;
-const int map_width = MAP_WIDTH;
+const int map_width = MAP_WIDTH;// TODO: change from game difficult
 
 mine_cell map[map_height][map_width];
 int mines, closed_cells;
 
 void new_game(void) {
-    memset(map, 0, sizeof(map));
     
+    memset(map, 0, sizeof(map));
     mines = 20;
     closed_cells = map_height * map_width;
     
     for (int i = 0; i < mines; i++) {
-        int x = rand() % map_width;
+        int x = rand() % map_width; //TODO: refactor this logic, because mines not changed
         int y = rand() % map_height;
         
         if (map[x][y].mine) {

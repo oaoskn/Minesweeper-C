@@ -11,7 +11,7 @@ extern const int map_width, map_height;
 extern mine_cell map[MAP_WIDTH][MAP_HEIGHT];
 extern int mines;
 
-game_difficult difficult;
+game_settings settings;
 
 // MARK: - Func to show mines count
 
@@ -118,11 +118,14 @@ void touch_to_open_cell(int button, int state, int x, int y) {
         int cell_x = x / (float)glutGet(GLUT_WINDOW_WIDTH) * MAP_WIDTH;
         int cell_y = MAP_HEIGHT - y / (float)glutGet(GLUT_WINDOW_HEIGHT) * MAP_HEIGHT; // Invert y-coordinate because OpenGL origin is at bottom-left
         
-        
         if (cell_in_map(cell_x, cell_y)) {
             map[cell_x][cell_y].open = true;
-            printf("cell (%d, %d) is open ", cell_x, cell_y);
+            if (map[cell_x][cell_y].mine == true) {
+                printf("YOU ARE A LOSER!!!\n");
+                exit(0);
+            }
         }
+        
         // Print out the cell coordinates
         printf("Clicked on cell (%d, %d)\n", cell_x, cell_y);
         
@@ -165,7 +168,7 @@ void show_game(void) {
 // MARK: - Scene lifecycle
 
 void display(void) {
-    glClearColor(0.07f, 0.13f, 0.17f, 0.0f); // set background colora
+    glClearColor(0.07f, 0.13f, 0.17f, 0.0f); // set background color
     glClear(GL_COLOR_BUFFER_BIT); //clear that color
     show_game();
     glFlush();
@@ -220,35 +223,33 @@ void create_window(void) {
     
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     
-    size_from_difficult game_size;
-    difficult = HARD;
+    settings.difficult = HARD;
     
-    switch (difficult) { // TODO: Need to create how to resize map size
+    switch (settings.difficult) { // TODO: Need to create how to resize map size
         case EASY:
-            game_size.width = 400;
-            game_size.height = 300;
+            settings.parameters.width = 400;
+            settings.parameters.height = 300;
             // map_width = 10;
             // map_height = 10;
-            mines = 10;
+            settings.parameters.mines = 10;
             break;
         case MEDIUM:
-            game_size.width = 600;
-            game_size.height = 400;
-            mines = 20;
+            settings.parameters.width = 600;
+            settings.parameters.height = 400;
+            settings.parameters.mines = 20;
             break;
         case HARD:
-            game_size.width = 800;
-            game_size.height = 600;
-            mines = 30;
+            settings.parameters.width = 800;
+            settings.parameters.height = 600;
+            settings.parameters.mines = 30;
             break;
         case HARDCORE:
-            game_size.width = 1000;
-            game_size.height = 800;
-            mines = 100;
+            settings.parameters.width = 1000;
+            settings.parameters.height = 800;
+            settings.parameters.mines = 100;
             break;
     }
-   
-    glutInitWindowSize(game_size.width, game_size.height); //TODO: change to game_size in future
+    glutInitWindowSize(settings.parameters.width, settings.parameters.height); //TODO: change to game_size in future
     glutInitWindowPosition(325, 150);
     glutCreateWindow("MINESWEEPER GAME");
    

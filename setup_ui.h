@@ -21,18 +21,6 @@
 // Local files
 #include "game.h"
 
-typedef struct {
-    int height;
-    int width;
-} size_from_difficult;
-
-typedef enum {
-    EASY,
-    MEDIUM,
-    HARD,
-    HARDCORE // this is for fucking menace
-} game_difficult;
-
 // MARK: - Создание интерфейса
 
 void show_mines_count(int);
